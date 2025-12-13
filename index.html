@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age & Gender Predictor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<style>
+:root{
+    --bg:#0f0518;
+    --bg2:#1a0b2e;
+    --accent:#ff6b35;
+    --neon:#a855f7;
+    --text:#fff;
+    --dim:#aaa;
+    --glass:rgba(255,255,255,.06);
+    --border:1px solid rgba(255,255,255,.1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,var(--bg),var(--bg2));
+    color:var(--text);
+    overflow-x:hidden;
+    transition:.4s;
+}
+
+/* ===== Neon Mode ===== */
+body.neon{
+    --accent:#00f5ff;
+    --neon:#00ffa6;
+    background:radial-gradient(circle at top,#001a1f,#000);
+}
+
+/* ===== Navbar ===== */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 6%;
+    backdrop-filter:blur(10px);
+    background:rgba(0,0,0,.3);
+}
+
+.logo{font-weight:700;font-size:1.2rem}
+.logo i{color:var(--accent)}
+
+.toggle{
+    cursor:pointer;
+    font-size:1.2rem;
+}
+
+/* ===== Layout ===== */
+.main{
+    display:flex;
+    gap:60px;
+    padding:60px 6%;
+    align-items:center;
+}
+
+.hero{flex:1}
+.hero h1{
+    font-size:3.5rem;
+    background:linear-gradient(to right,var(--accent),var(--neon));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--dim);margin:25px 0;max-width:500px}
+
+/* ===== Cards ===== */
+.cards{display:flex;gap:20px}
+.card{
+    flex:1;
+    padding:20px;
+    background:var(--glass);
+    border:var(--border);
+    border-radius:15px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
+.card i{font-size:1.8rem;color:var(--neon)}
+.card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent);
+    transform:translateX(-100%);
+}
+.card:hover::after{animation:shine .8s}
+@keyframes shine{to{transform:translateX(100%)}}
+
+/* ===== Upload Card ===== */
+.upload{flex:1;display:flex;justify-content:center}
+.glass{
+    width:100%;
+    max-width:450px;
+    padding:30px;
+    border-radius:25px;
+    background:var(--glass);
+    border:var(--border);
+    backdrop-filter:blur(15px);
+    text-align:center;
+    position:relative;
+    min-height: 400px; /* Thabet height to prevent jumping too much */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.drop{
+    border:2px dashed rgba(255,255,255,.2);
+    border-radius:15px;
+    padding:30px;
+    cursor:pointer;
+    min-height:250px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    transition:.3s;
+}
+.drop:hover{border-color:var(--accent)}
+
+/* Hide preview initially */
+.preview{
+    display:none;
+    width:100%;
+}
+
+.preview img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    border-radius:12px;
+    animation:zoom .6s ease;
+    display: none; /* Hidden until loaded */
+}
+@keyframes zoom{
+    from{transform:scale(.85);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
+
+/* ===== Result Section (Modified) ===== */
+.result{
+    /* Removed absolute positioning */
+    margin-top: 15px;
+    background:rgba(0,0,0,.5);
+    border: var(--border);
+    border-radius: 12px;
+    padding:15px;
+    display:none; /* Hidden initially */
+    justify-content:space-around;
+    /* Keeps animation logic */
+}
+.result.show{
+    display:flex;
+    animation:pop .6s cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes pop{
+    from{opacity:0;transform:translateY(20px) scale(.9)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ===== Skeleton Loader ===== */
+.skeleton{
+    width:100%;
+    height:250px;
+    border-radius:12px;
+    background:linear-gradient(90deg,#333,#444,#333);
+    background-size:200%;
+    animation:skeleton 1.2s infinite;
+    display: block;
+}
+@keyframes skeleton{
+    0%{background-position:0%}
+    100%{background-position:200%}
+}
+
+/* ===== Buttons Group (New) ===== */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button{
+    flex: 1;
+    padding:15px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(to right,var(--accent),var(--neon));
+    color:#fff;
+    font-size:1rem;
+    cursor:pointer;
+    transition: 0.3s;
+}
+
+/* Secondary Button Style */
+button.secondary {
+    background: transparent;
+    border: 1px solid var(--dim);
+    color: var(--dim);
+}
+button.secondary:hover {
+    border-color: var(--text);
+    color: var(--text);
+    background: rgba(255,255,255,0.05);
+}
+
+button.processing{
+    background:linear-gradient(90deg,#444,#666,#444);
+    background-size:200%;
+    animation:loading 1.2s infinite;
+    cursor: not-allowed;
+}
+@keyframes loading{
+    0%{background-position:0%}
+    100%{background-position:200%}
+}
+
+/* ===== Mobile ===== */
+@media(max-width:900px){
+    .main{flex-direction:column;text-align:center}
+    .hero h1{font-size:2.6rem}
+    .cards{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo"><i class="fas fa-brain"></i> Age Predictor</div>
+    <div class="toggle" id="mode"><i class="fas fa-bolt"></i></div>
+</nav>
+
+<section class="main">
+
+    <div class="hero">
+        <h1>Advanced Age &<br>Gender Detection</h1>
+        <p>AI-powered deep learning system to detect age and gender instantly.</p>
+
+        <div class="cards">
+            <div class="card"><i class="fas fa-microchip"></i><p>Deep Learning</p></div>
+            <div class="card"><i class="fas fa-bolt"></i><p>Fast</p></div>
+            <div class="card"><i class="fas fa-bullseye"></i><p>Accurate</p></div>
+        </div>
+    </div>
+
+    <div class="upload">
+        <div class="glass">
+
+            <div class="drop" id="drop">
+                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                <p>Drop Image or Click</p>
+            </div>
+
+            <div class="preview" id="preview">
+                <div class="skeleton" id="skeleton"></div>
+                <img id="img">
+                
+                <div class="result" id="result">
+                    <div>Gender<br><b id="g">--</b></div>
+                    <div>Age<br><b id="a">--</b></div>
+                    <div>Conf<br><b id="c">--</b></div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="changeBtn" class="secondary" style="display: none;">Change</button>
+                <button id="analyzeBtn">Analyze</button>
+            </div>
+            
+            <input type="file" hidden id="file" accept="image/*">
+
+        </div>
+    </div>
+
+</section>
+
+<script>
+/* ===== GSAP Intro ===== */
+gsap.from("nav",{y:-80,opacity:0,duration:1});
+gsap.from(".hero h1",{x:-80,opacity:0,duration:1,delay:.3});
+gsap.from(".hero p",{x:-60,opacity:0,duration:1,delay:.6});
+gsap.from(".card",{y:40,opacity:0,stagger:.2,delay:.8});
+gsap.from(".glass",{x:80,opacity:0,duration:1,delay:.5});
+
+/* ===== Toggle Mode ===== */
+document.getElementById("mode").onclick=()=>{
+    document.body.classList.toggle("neon");
+};
+
+/* ===== Elements ===== */
+const drop = document.getElementById("drop");
+const fileInput = document.getElementById("file");
+const preview = document.getElementById("preview");
+const img = document.getElementById("img");
+const skeleton = document.getElementById("skeleton");
+const analyzeBtn = document.getElementById("analyzeBtn");
+const changeBtn = document.getElementById("changeBtn");
+const result = document.getElementById("result");
+
+/* ===== Upload Logic ===== */
+drop.onclick = () => fileInput.click();
+
+fileInput.onchange = e => {
+    const f = e.target.files[0];
+    if(!f) return;
+
+    // 1. Hide Drop, Show Preview
+    drop.style.display = "none";
+    preview.style.display = "block";
+    
+    // 2. Reset States
+    img.style.display = "none";
+    skeleton.style.display = "block";
+    result.classList.remove("show"); // Hide previous results
+    changeBtn.style.display = "block"; // Show change button
+
+    // 3. Load Image
+    setTimeout(() => {
+        img.src = URL.createObjectURL(f);
+        img.onload = () => {
+            skeleton.style.display = "none";
+            img.style.display = "block";
+        }
+    }, 800);
+};
+
+/* ===== Change Image Logic ===== */
+changeBtn.onclick = () => {
+    fileInput.value = ""; // Reset input
+    preview.style.display = "none"; // Hide preview
+    drop.style.display = "flex"; // Show drop box again
+    changeBtn.style.display = "none"; // Hide change button
+    result.classList.remove("show"); // Reset result
+};
+
+/* ===== Analyze Logic ===== */
+analyzeBtn.onclick = () => {
+    // Check if image is loaded first
+    if(window.getComputedStyle(drop).display !== "none") {
+        alert("Please upload an image first!");
+        return;
+    }
+
+    analyzeBtn.classList.add("processing");
+    analyzeBtn.innerText = "Processing...";
+    
+    setTimeout(() => {
+        analyzeBtn.classList.remove("processing");
+        analyzeBtn.innerText = "Analyze";
+        
+        document.getElementById("g").innerText = "Male";
+        document.getElementById("a").innerText = "23";
+        document.getElementById("c").innerText = "96%";
+        
+        result.classList.add("show");
+    }, 2000);
+};
+</script>
+
+</body>
+</html>

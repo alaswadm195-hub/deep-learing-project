@@ -1,0 +1,15 @@
+.venv/
+venv/
+archive (26)/
+archive (26).zip
+processed_data/
+processed_test/
+test_images/
+checkpoints/
+results/
+__pycache__/
+*.pyc
+*.pth
+*.pt
+.vscode/
+.idea/

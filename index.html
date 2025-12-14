@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Age & Gender Predictor</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
     <nav>
         <div class="logo"><i class="fas fa-brain"></i> Age Predictor</div>
         <div class="toggle" id="mode"><i class="fas fa-bolt"></i></div>
     </nav>
-
     <section class="main">
         <div class="hero">
             <h1>Advanced Age &<br>Gender Detection</h1>
@@ -28,38 +23,30 @@
                 <div class="card"><i class="fas fa-bullseye"></i><p>Accurate</p></div>
             </div>
         </div>
-
         <div class="upload">
             <div class="glass">
                 <div class="drop" id="drop">
                     <i class="fas fa-cloud-upload-alt fa-3x"></i>
                     <p>Drop Image or Click</p>
                 </div>
-
                 <div class="preview" id="preview">
                     <div class="skeleton" id="skeleton"></div>
                     <img id="img">
-                    
                     <div class="result" id="result">
                         <div>Gender<br><b id="g">--</b></div>
                         <div>Age<br><b id="a">--</b></div>
                         <div>Conf<br><b id="c">--</b></div>
                     </div>
                 </div>
-
                 <div class="btn-group">
                     <button id="changeBtn" class="secondary" style="display: none;">Change</button>
                     <button id="analyzeBtn">Analyze</button>
                 </div>
-                
                 <input type="file" hidden id="file" accept="image/*">
             </div>
         </div>
     </section>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
     <script src="script.js"></script>
-
 </body>
 </html>

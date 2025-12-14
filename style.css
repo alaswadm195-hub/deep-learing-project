@@ -8,9 +8,7 @@
     --glass: rgba(255, 255, 255, .06);
     --border: 1px solid rgba(255, 255, 255, .1);
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Poppins; }
-
 body {
     min-height: 100vh;
     background: linear-gradient(135deg, var(--bg), var(--bg2));
@@ -18,24 +16,19 @@ body {
     overflow-x: hidden;
     transition: .4s;
 }
-
 body.neon {
     --accent: #00f5ff;
     --neon: #00ffa6;
     background: radial-gradient(circle at top, #001a1f, #000);
 }
-
 nav {
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px 6%; backdrop-filter: blur(10px); background: rgba(0, 0, 0, .3);
 }
-
 .logo { font-weight: 700; font-size: 1.2rem; }
 .logo i { color: var(--accent); }
 .toggle { cursor: pointer; font-size: 1.2rem; }
-
 .main { display: flex; gap: 60px; padding: 60px 6%; align-items: center; }
-
 .hero { flex: 1; }
 .hero h1 {
     font-size: 3.5rem;
@@ -44,7 +37,6 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 .hero p { color: var(--dim); margin: 25px 0; max-width: 500px; }
-
 .cards { display: flex; gap: 20px; }
 .card {
     flex: 1; padding: 20px; background: var(--glass);
@@ -59,7 +51,6 @@ nav {
 }
 .card:hover::after { animation: shine .8s; }
 @keyframes shine { to { transform: translateX(100%); } }
-
 .upload { flex: 1; display: flex; justify-content: center; }
 .glass {
     width: 100%; max-width: 450px; padding: 30px; border-radius: 25px;
@@ -67,7 +58,6 @@ nav {
     text-align: center; position: relative; min-height: 400px;
     display: flex; flex-direction: column; justify-content: center;
 }
-
 .drop {
     border: 2px dashed rgba(255, 255, 255, .2); border-radius: 15px;
     padding: 30px; cursor: pointer; min-height: 250px;
@@ -75,14 +65,12 @@ nav {
     flex-direction: column; transition: .3s;
 }
 .drop:hover { border-color: var(--accent); }
-
 .preview { display: none; width: 100%; }
 .preview img {
     width: 100%; height: 250px; object-fit: cover;
     border-radius: 12px; animation: zoom .6s ease; display: none;
 }
 @keyframes zoom { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
 .result {
     margin-top: 15px; background: rgba(0, 0, 0, .5);
     border: var(--border); border-radius: 12px; padding: 15px;
@@ -95,30 +83,25 @@ nav {
     from { opacity: 0; transform: translateY(20px) scale(.9); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
-
 .skeleton {
     width: 100%; height: 250px; border-radius: 12px;
     background: linear-gradient(90deg, #333, #444, #333);
     background-size: 200%; animation: skeleton 1.2s infinite; display: block;
 }
 @keyframes skeleton { 0% { background-position: 0%; } 100% { background-position: 200%; } }
-
 .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 button {
     flex: 1; padding: 15px; border: none; border-radius: 50px;
     background: linear-gradient(to right, var(--accent), var(--neon));
     color: #fff; font-size: 1rem; cursor: pointer; transition: 0.3s;
 }
-
 button.secondary { background: transparent; border: 1px solid var(--dim); color: var(--dim); }
 button.secondary:hover { border-color: var(--text); color: var(--text); background: rgba(255, 255, 255, 0.05); }
-
 button.processing {
     background: linear-gradient(90deg, #444, #666, #444);
     background-size: 200%; animation: loading 1.2s infinite; cursor: not-allowed;
 }
 @keyframes loading { 0% { background-position: 0%; } 100% { background-position: 200%; } }
-
 @media(max-width: 900px) {
     .main { flex-direction: column; text-align: center; }
     .hero h1 { font-size: 2.6rem; }

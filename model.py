@@ -1,12 +1,9 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet50
-
 class AgeGenderModel(nn.Module):
     def __init__(self, pretrained: bool = True, freeze_backbone: bool = False, dropout: float = 0.5, hidden_dim: int = 512):
         super().__init__()
-        
-        # 1. Backbone Setup
         if pretrained:
             try:
                 from torchvision.models import ResNet50_Weights
@@ -15,54 +12,34 @@ class AgeGenderModel(nn.Module):
                 self.backbone = resnet50(pretrained=True)
         else:
             self.backbone = resnet50(weights=None)
-
-        # Remove the original FC layer
         in_features = self.backbone.fc.in_features
         self.backbone.fc = nn.Identity()
-
-        # Freeze Backbone Logic
         if freeze_backbone:
             for p in self.backbone.parameters():
                 p.requires_grad = False
-
-        # ---------------------------------------------------------
-        # 2. Architecture Improvements (Separate Heads + BatchNorm)
-        # ---------------------------------------------------------
-        
-        # == Age Head (Regression) ==
-        # زدنا طبقات عشان يقدر يفهم تعقيد العمر أكتر
         self.age_head = nn.Sequential(
             nn.Linear(in_features, hidden_dim),
-            nn.BatchNorm1d(hidden_dim),      # <--- بالإضافة الجديدة: استقرار للتدريب
+            nn.BatchNorm1d(hidden_dim),      
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout),
-            
             nn.Linear(hidden_dim, hidden_dim // 2),
             nn.BatchNorm1d(hidden_dim // 2),
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout / 2),
-            
-            nn.Linear(hidden_dim // 2, 1)    # Output: Age
+            nn.Linear(hidden_dim // 2, 1)    
         )
-
-        # == Gender Head (Classification) ==
         self.gender_head = nn.Sequential(
             nn.Linear(in_features, hidden_dim),
-            nn.BatchNorm1d(hidden_dim),      # <--- بالإضافة الجديدة
+            nn.BatchNorm1d(hidden_dim),      
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout),
-            
             nn.Linear(hidden_dim, hidden_dim // 2),
             nn.BatchNorm1d(hidden_dim // 2),
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout / 2),
-            
-            nn.Linear(hidden_dim // 2, 2)    # Output: Gender Logits
+            nn.Linear(hidden_dim // 2, 2)    
         )
-
-        # 3. Smart Initialization
         self._init_weights()
-
     def _init_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Linear):
@@ -72,17 +49,9 @@ class AgeGenderModel(nn.Module):
             elif isinstance(m, nn.BatchNorm1d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-        
-        # Smart Init for Age:
-        # بنخلي أخر طبقة للعمر تبدأ بbias = 30، عشان الموديل يبدأ توقعه من 30 سنة مش من صفر.
-        # ده بيسرع الـ Convergence جداً في الـ Regression.
         nn.init.constant_(self.age_head[-1].bias, 30.0)
-
     def forward(self, x):
-        features = self.backbone(x)        # [Batch, 2048]
-        
-        # كل واحد بياخد مسار لوحده
-        age = self.age_head(features)      # [Batch, 1]
-        gender = self.gender_head(features)# [Batch, 2]
-        
+        features = self.backbone(x)        
+        age = self.age_head(features)      
+        gender = self.gender_head(features)
         return age, gender

@@ -1,7 +1,3 @@
-"""preprocessing.py
-Preprocessing utilities for Age & Gender project.
-Corrected dunder methods (__init__, __len__, __getitem__) and updated augmentations.
-"""
 import os
 import re
 import json
@@ -234,18 +230,24 @@ class DatasetPreparer:
         self.label_extractor = LabelExtractor()
         self.metadata: List[dict] = []
     def prepare(self, clean_corrupted=True, detect_faces=True, save_processed_images=True):
-        print("🚀 بدء تحضير الداتاست...")
-        print("\n📋 الخطوة 1: التحقق من سلامة الصور...")
-        results = self.validator.clean_dataset(self.dataset_path, remove_corrupted=clean_corrupted)
-        print(f"✅ إجمالي الصور: {results['total']}")
-        print(f"✅ صور سليمة: {results['valid']}")
-        print("\n🔄 الخطوة 2: معالجة الصور...")
-        self._process_images(detect_faces, save_processed_images)
-        print("\n💾 الخطوة 3: حفظ البيانات...")
-        self._save_metadata()
-        print("\n✂ الخطوة 4: تقسيم البيانات...")
-        self._split_data()
-        print("\n✨ تم الانتهاء من تحضير الداتاست!")
+    print("Starting dataset preparation...")
+    
+    print("\nStep 1: Checking image integrity...")
+    results = self.validator.clean_dataset(self.dataset_path, remove_corrupted=clean_corrupted)
+    print(f"Total images: {results['total']}")
+    print(f"Valid images: {results['valid']}")
+    
+    print("\nStep 2: Processing images...")
+    self._process_images(detect_faces, save_processed_images)
+    
+    print("\nStep 3: Saving data...")
+    self._save_metadata()
+    
+    print("\nStep 4: Splitting data...")
+    self._split_data()
+    
+    print("\nDataset preparation completed!")
+
         return self.metadata
     def _process_images(self, detect_faces: bool, save_processed: bool):
         image_files = []
@@ -254,7 +256,7 @@ class DatasetPreparer:
         processed_dir = Path(self.output_path) / 'processed_images'
         if save_processed:
             processed_dir.mkdir(exist_ok=True)
-        for img_path in tqdm(image_files, desc="معالجة الصور"):
+        for img_path in tqdm(image_files, desc="Processing images"):
             try:
                 image = cv2.imread(str(img_path))
                 if image is None: continue
